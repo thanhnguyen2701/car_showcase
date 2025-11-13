@@ -1,42 +1,42 @@
-import { CarProps } from "@/types";
+import { CarProps, FiltersProps } from "@/types";
 
-export async function fetchCars() {
-    const headers= {
-            'x-rapidapi-key': '2fcb3bf26amsh3959ef38cf1db7ep166c3fjsn279382b71f7e',
-            'x-rapidapi-host': 'cars-by-api-ninjas.p.rapidapi.com'
+export async function fetchCars(filters: FiltersProps) {
+    const { manufacturer, model } = filters;
+    const headers = {
+        'x-rapidapi-key': '2fcb3bf26amsh3959ef38cf1db7ep166c3fjsn279382b71f7e',
+        'x-rapidapi-host': 'cars-by-api-ninjas.p.rapidapi.com'
     }
 
-    const response = await fetch('https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?model=q3',
-        {
-            headers: headers,
-        }
-    );
+    const url = new URL('https://cars-by-api-ninjas.p.rapidapi.com/v1/cars');
+    if (manufacturer) url.searchParams.append('make', manufacturer.trim().toLowerCase());
+    if (model) url.searchParams.append('model', model.trim().toLowerCase());
 
+    const response = await fetch(url.toString(), { headers });
     const result = await response.json();
 
     return result;
 }
 
 export const calculateCarRent = (year: number) => {
-  const basePricePerDay = 50; // Base rental price per day in dollars
-  const mileageFactor = 0.1; // Additional rate per mile driven
-  const ageFactor = 0.05; // Additional rate per year of vehicle age
+    const basePricePerDay = 50; // Base rental price per day in dollars
+    const mileageFactor = 0.1; // Additional rate per mile driven
+    const ageFactor = 0.05; // Additional rate per year of vehicle age
 
-  // Calculate additional rate based on mileage and age
-  // Set city_mpg = 1
-  const mileageRate = 1 * mileageFactor;
-  const ageRate = (new Date().getFullYear() - year) * ageFactor;
+    // Calculate additional rate based on mileage and age
+    // Set city_mpg = 1
+    const mileageRate = 1 * mileageFactor;
+    const ageRate = (new Date().getFullYear() - year) * ageFactor;
 
-  // Calculate total rental rate per day
-  const rentalRatePerDay = basePricePerDay + mileageRate + ageRate;
+    // Calculate total rental rate per day
+    const rentalRatePerDay = basePricePerDay + mileageRate + ageRate;
 
-  return rentalRatePerDay.toFixed(0);
+    return rentalRatePerDay.toFixed(0);
 };
 
-export const generateCarImageUrl = (car: CarProps, angle?:string)=>{
+export const generateCarImageUrl = (car: CarProps, angle?: string) => {
     const url = new URL('https://cdn.imagin.studio/getImage')
 
-    const {make, year, model} = car;
+    const { make, year, model } = car;
 
     url.searchParams.append('customer', 'img')
     url.searchParams.append('make', make)

@@ -1,32 +1,39 @@
 import { CarCard, CustomFilter, Hero, SearchBar } from "@/components";
+import { FiltersProps } from "@/types";
 import { fetchCars } from "@/utils";
 
-export default async function Home() {
-  const allCars = await fetchCars();
+export default async function Home({ searchParams }: { searchParams: FiltersProps }) {
+  const params = await searchParams;
+  const allCars = await fetchCars({
+    manufacturer: params.manufacturer || '',
+    model: params.model || ''
+  });
+
+  console.log(allCars)
 
   const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars;
 
   return (
     <main className="overflow-hidden">
-      <Hero/>
+      <Hero />
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
           <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
           <p>Explore the cars you might like</p>
         </div>
         <div className="home__filters">
-          <SearchBar/>
+          <SearchBar />
           <div className="home__filter-container">
-            <CustomFilter title="fuel"/>
-            <CustomFilter title="year"/>
+            <CustomFilter title="fuel" />
+            <CustomFilter title="year" />
           </div>
         </div>
 
         {!isDataEmpty ? (
           <section>
             <div className="home__cars-wrapper">
-              {allCars?.map((car)=>(
-                <CarCard car={car}/>
+              {allCars?.map((car) => (
+                <CarCard car={car} />
               ))}
             </div>
           </section>
