@@ -11,9 +11,8 @@ interface CarCardProps {
   car: CarProps
 }
 const CarCard = ({ car }: CarCardProps) => {
-  const { cylinders, displacement, drive, fuel_type, make, model, transmission, year } = car;
+  const { class: carClass, cylinders, displacement, drive, fuel_type, make, model, transmission, year } = car;
   const carRent = calculateCarRent(year);
-
   const [isOpen, setIsOpen] = useState(false)
 
   return (
